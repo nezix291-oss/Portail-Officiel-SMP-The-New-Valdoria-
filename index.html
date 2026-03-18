@@ -1,1 +1,162 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>The New Valdoria | Économie & Administration</title>
+    <style>
+        :root {
+            --bg-dark: #0a0c10;
+            --bg-card: rgba(22, 27, 34, 0.95);
+            --blue-main: #3b82f6;
+            --green-main: #238636;
+            --text-white: #f0f6fc;
+            --text-gray: #8b949e;
+            --border: #30363d;
+            --gold: #f1c40f;
+        }
 
+        body { margin: 0; padding: 0; font-family: 'Segoe UI', sans-serif; background: var(--bg-dark); color: var(--text-white); }
+
+        /* --- NAVBAR --- */
+        .navbar { position: fixed; top: 0; width: 100%; background: rgba(13, 17, 23, 0.98); border-bottom: 1px solid var(--border); display: flex; justify-content: space-around; align-items: center; padding: 15px 0; z-index: 9999; }
+        .nav-links span { margin: 0 10px; cursor: pointer; font-weight: 600; font-size: 0.8rem; text-transform: uppercase; color: var(--text-gray); }
+        .nav-links span:hover { color: var(--blue-main); }
+        .wallet-display { color: var(--gold); font-weight: bold; background: rgba(241, 196, 15, 0.1); padding: 5px 12px; border-radius: 20px; border: 1px solid var(--gold); }
+
+        /* --- PAGES --- */
+        .content-page { display: none; padding-top: 100px; min-height: 100vh; animation: fadeIn 0.3s; }
+        .active { display: block; }
+        @keyframes fadeIn { from { opacity: 0; } to { opacity: 1; } }
+
+        /* --- FORMULAIRES (CONNEXION) --- */
+        .auth-container { max-width: 400px; margin: 50px auto; background: var(--bg-card); padding: 30px; border-radius: 12px; border: 1px solid var(--border); }
+        input { width: 100%; padding: 12px; margin: 10px 0; background: #0d1117; border: 1px solid var(--border); color: white; border-radius: 6px; box-sizing: border-box; }
+        .btn-auth { width: 100%; padding: 12px; background: var(--blue-main); border: none; color: white; font-weight: bold; border-radius: 6px; cursor: pointer; }
+
+        /* --- ADMIN PANEL --- */
+        .admin-panel { max-width: 600px; margin: auto; background: #1a1100; border: 1px solid var(--gold); padding: 25px; border-radius: 10px; }
+        .admin-title { color: var(--gold); text-align: center; text-transform: uppercase; letter-spacing: 2px; }
+
+        /* --- BOUTIQUE CARDS --- */
+        .container { max-width: 1000px; margin: auto; padding: 20px; }
+        .box-grid { display: grid; grid-template-columns: repeat(auto-fit, minmax(250px, 1fr)); gap: 20px; }
+        .box-card { background: var(--bg-card); border: 1px solid var(--border); padding: 20px; border-radius: 10px; text-align: center; }
+        .price { font-size: 1.5rem; color: var(--gold); margin: 10px 0; }
+
+        footer { text-align: center; padding: 40px; border-top: 1px solid var(--border); margin-top: 50px; }
+    </style>
+</head>
+<body>
+
+    <div class="navbar">
+        <b onclick="changePage('home')">🌍 VALDORIA</b>
+        <div class="nav-links">
+            <span onclick="changePage('home')">Accueil</span>
+            <span onclick="changePage('shop')">Boutique</span>
+            <span onclick="changePage('login')">Connexion</span>
+            <span onclick="changePage('admin')" id="admin-link" style="color:red; display:none;">Admin</span>
+            <span class="wallet-display">Solde: <span id="balance">0.00</span>€</span>
+        </div>
+    </div>
+
+    <div id="home" class="content-page active">
+        <div style="text-align:center; padding: 50px;">
+            <h1>Bienvenue sur Valdoria</h1>
+            <p>Connectez-vous pour acheter des box et gérer votre empire.</p>
+            <button class="btn-auth" style="width:200px" onclick="changePage('login')">Se connecter</button>
+        </div>
+    </div>
+
+    <div id="login" class="content-page">
+        <div class="auth-container">
+            <h2 style="text-align:center">Connexion</h2>
+            <input type="text" id="username" placeholder="Pseudo Minecraft">
+            <input type="password" id="password" placeholder="Code Secret">
+            <button class="btn-auth" onclick="login()">Se connecter</button>
+            <p style="font-size: 0.8rem; text-align:center; color: var(--text-gray); margin-top: 15px;">Note: Utilisez l'identifiant admin pour accéder au panel.</p>
+        </div>
+    </div>
+
+    <div id="shop" class="content-page">
+        <div class="container">
+            <h2 style="text-align:center">Boutique de Box</h2>
+            <div class="box-grid">
+                <div class="box-card">
+                    <h3>Box Citoyen</h3>
+                    <div class="price">2.00€</div>
+                    <button class="btn-auth" style="background:var(--green-main)" onclick="buyBox(2)">Acheter</button>
+                </div>
+                <div class="box-card">
+                    <h3>Box Guerrier</h3>
+                    <div class="price">5.00€</div>
+                    <button class="btn-auth" style="background:var(--green-main)" onclick="buyBox(5)">Acheter</button>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <div id="admin" class="content-page">
+        <div class="container">
+            <div class="admin-panel">
+                <h2 class="admin-title">🛠️ Panel Administrateur</h2>
+                <p>Ajouter de l'argent au compte actuel :</p>
+                <input type="number" id="give-amount" placeholder="Montant en €">
+                <button class="btn-auth" style="background:var(--gold); color:black" onclick="giveMoney()">Give Argent</button>
+            </div>
+        </div>
+    </div>
+
+    <footer>&copy; 2026 The New Valdoria | Système Économique Simulation</footer>
+
+    <script>
+        let balance = 0.00;
+
+        function changePage(pageId) {
+            document.querySelectorAll('.content-page').forEach(p => p.classList.remove('active'));
+            document.getElementById(pageId).classList.add('active');
+            window.scrollTo(0,0);
+        }
+
+        function login() {
+            const user = document.getElementById('username').value;
+            const pass = document.getElementById('password').value;
+            
+            // Code mis à jour vers 743474
+            if(user === "admin" && pass === "743474") {
+                alert("Connecté en tant qu'Administrateur !");
+                document.getElementById('admin-link').style.display = "inline";
+                changePage('admin'); // Redirection directe vers le panel
+            } else if(user !== "" && pass !== "") {
+                alert("Connexion réussie pour " + user);
+                changePage('home');
+            } else {
+                alert("Veuillez remplir les champs.");
+            }
+        }
+
+        function giveMoney() {
+            const amount = parseFloat(document.getElementById('give-amount').value);
+            if(!isNaN(amount)) {
+                balance += amount;
+                updateBalance();
+                alert(amount + "€ ajoutés au solde !");
+            }
+        }
+
+        function buyBox(cost) {
+            if(balance >= cost) {
+                balance -= cost;
+                updateBalance();
+                alert("Achat réussi ! Bonne chance pour l'ouverture.");
+            } else {
+                alert("Solde insuffisant ! Allez voir l'admin ou rechargez.");
+            }
+        }
+
+        function updateBalance() {
+            document.getElementById('balance').innerText = balance.toFixed(2);
+        }
+    </script>
+</body>
+</html>
